@@ -6,7 +6,7 @@ Authentication
 
 User
 ✅ Add user - POST /users [ADMIN] //Can have 'admin' role
-✅ View user - GET /users/:user_id [ADMIN]
+✅ View user - GET /users/:user_id
 ✅ View all users - GET /users [ADMIN]
 ✅ Delete user - DEL /users/:user_id [ADMIN]
 ⬜ Delete users - DEL /users [ADMIN]
