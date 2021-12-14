@@ -4,10 +4,10 @@ const User = require("../models/user");
 module.exports = class UserService {
     static async getAllUsers(){
         try {
-            const allUsers = await User.find();
+            const allUsers = await User.find().select("-password");
             return allUsers;
         } catch (error) {
-            console.log(`Could not fetch articles ${error}`)
+            throw new Error(error)
         }
     }
 
@@ -36,11 +36,37 @@ module.exports = class UserService {
                 password: data.passwordHash,
                 full_name: data.full_name
             }
+
+            if(data.role) newUser.role = data.role
+
            const response = await new User(newUser).save();
            return response;
         } catch (error) {
             throw new Error(error)
         } 
+
+    }
+
+    static async updateUserbyId(data){
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                data.user_id,
+                { $set: {...data.changes} },
+                { new: true }
+            )
+            return updatedUser
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
+    static async deleteUserbyId(userId){
+        try {
+            const response = await User.findByIdAndDelete(userId);
+            return response;
+        } catch (error) {
+            throw new Error(error)
+        }
 
     }
 }

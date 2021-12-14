@@ -11,6 +11,8 @@ module.exports = class User{
         const data = req.body;
 
         try {
+            if(data.role === 'admin') {return res.status(400).send({ error: true, message: "role must be user" })}
+            
             const passwordHash = await bcrypt.hash(data.password, 10)
             const user = await UserService.createUser({
                 email: data.email,
