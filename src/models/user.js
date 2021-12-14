@@ -22,6 +22,12 @@ const userSchema = new Schema(
       default: 'user',
       required: true,
     },
+    status: {
+      type: String,
+      enum: ['enabled', 'disabled'],
+      default: 'enabled',
+      required: true
+    }
   },
   {
     timestamps: {
