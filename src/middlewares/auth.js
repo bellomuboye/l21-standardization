@@ -14,6 +14,11 @@ module.exports = class AuthMiddleware {
 
             next()
         } catch (error) {
+            res.status(400).send({
+                error: true,
+                message: "invalid request",
+                data: error.toString()
+            })
             next(error)
         }
     }
@@ -30,6 +35,11 @@ module.exports = class AuthMiddleware {
 
             next()
         } catch (error) {
+            res.status(400).send({
+                error: true,
+                message: "invalid request",
+                data: error.toString()
+            })
             next(error)
         }
     }
