@@ -60,6 +60,31 @@ module.exports = class UserService {
         }
     }
 
+    static async addUserTransactionbyId(data){
+        try {
+            const user = await User.findById({_id: data.user_id});
+            user.transactions.push(data.transaction_id)
+            const response = await user.save();
+            return response;
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
+    static async deleteUserTransaction(data){
+        try {
+            const user = await User.findById({_id: data.user_id});
+            let index = user.transactions.indexOf(data.transaction_id)
+            if (index !== -1) {
+                user.transactions.splice(index, 1)
+            }
+            const response = await user.save();
+            return response
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
     static async deleteUserbyId(userId){
         try {
             const response = await User.findByIdAndDelete(userId);
@@ -68,5 +93,17 @@ module.exports = class UserService {
             throw new Error(error)
         }
 
+    }
+
+    static async getUserTransactions(userId){
+        try {
+            const user = await User
+                .findById({_id: userId})
+                .populate('transactions')
+                .select('-password')
+            return user
+        } catch(error) {
+            throw new Error(error)
+        }
     }
 }

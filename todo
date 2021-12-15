@@ -14,11 +14,11 @@ User
 ✅ Enable account - PUT /users/:user_id/enable [ADMIN]
 
 Transactions
-⬜ Deposit - POST /transactions/deposit
-⬜ Withdraw - POST /transactions/withdraw
-⬜ Transfer - POST /transactions/transfer
-⬜ View my transactions - GET /transactions/:user_id
-⬜ View all transactions - GET /transactions [ADMIN]
+✅ Deposit - POST /transactions/deposit
+✅ Withdraw - POST /transactions/withdraw
+✅ Transfer - POST /transactions/transfer
+✅ View my transactions - GET /transactions/:user_id
+✅ View all transactions - GET /transactions [ADMIN]
 ⬜ View users transactions - GET /transactions/:user_id [ADMIN]
-⬜ View transaction details - GET /transactions/:tx_id
-⬜ Reverse Transaction - PUT /transactions/:tx_id/reverse [ADMIN]
+✅ View transaction details - GET /transactions/:transaction_id
+✅ Reverse Transaction - PUT /transactions/:transaction_id/reverse [ADMIN]
