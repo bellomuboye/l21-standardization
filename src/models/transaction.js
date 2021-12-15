@@ -15,29 +15,51 @@ const transactionSchema = new Schema(
     },
     sender_id: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
+      ref: 'user',
+      validate: [
+        {
+          validator: function(v) {
+            if (this.type === "withdraw" || this.type === "transfer" ) {
+              return v
+            }
+          },
+          message: "sender_id is required"
+        },
+        {
+          validator: function(v) {
+            if (this.type === "transfer") {
+              return mongoose.Types.ObjectId.isValid(v)
+            }
+          },
+          message: "invalid sender_id"
+        }
+      ]
     },
     recipient_id: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
+      ref: 'user',
+      validate: [
+        {
+          validator: function(v) {
+            if (this.type === "deposit" || this.type === "transfer" ) {
+              return v
+            }
+          },
+          message: "recipient_id is required"
+        },
+        {
+          validator: function(v) {
+            if (this.type === "transfer") {
+              return mongoose.Types.ObjectId.isValid(v)
+            }
+          },
+          message: "invalid sender_id"
+        }
+      ]
     },
     description: {
       type: String,
-    },
-    // corresponding: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'Transaction',
-    //   validate: {
-    //     validator: function(v) {
-    //       if (this.type === "transfer") {
-    //         if (mongoose.Types.ObjectId.isValid(v)) return true;
-    //       }
-    //     },
-    //     message: "A transfer must have a corresponding transaction id"
-    //   }
-    // }
+    }
   },
   {
     timestamps: {

@@ -166,7 +166,7 @@ module.exports = class Tranasaction{
         try {
             const transaction = await TransactionService.getTransactionById(transaction_id)
             if (!transaction) return res.status(404).send({error: true, message: "invalid transaction id"})
-            if (transaction.type === "deceipt") {
+            if (transaction.type === "deposit") {
                 await UserService.deleteUserTransaction({user_id: transaction.recipient_id, transaction_id: transaction._id})
             } else if (transaction.type === "withdraw") {
                 await UserService.deleteUserTransaction({user_id: transaction.sender_id, transaction_id: transaction._id})
