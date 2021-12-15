@@ -27,7 +27,11 @@ const userSchema = new Schema(
       enum: ['enabled', 'disabled'],
       default: 'enabled',
       required: true
-    }
+    },
+    transactions: [{
+      type: Schema.Types.ObjectId,
+      ref: 'transaction'
+    }]
   },
   {
     timestamps: {
