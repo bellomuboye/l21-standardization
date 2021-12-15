@@ -42,7 +42,7 @@ const transactionSchema = new Schema(
         {
           validator: function(v) {
             if (this.type === "deposit" || this.type === "transfer" ) {
-              return v
+              if(!v) return false
             }
           },
           message: "recipient_id is required"

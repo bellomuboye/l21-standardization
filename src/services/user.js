@@ -60,6 +60,33 @@ module.exports = class UserService {
         }
     }
 
+    static async updateUserBalance(data) {
+        try {
+            const updatedUser = await User.findByIdAndUpdate(
+                data.user_id,
+                { $inc: {balance: data.amount} },
+                { new: true }
+            )
+
+            return updatedUser
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
+    static async isBalanceSufficient(data) {
+        try {
+            const userBalance = await User.findById({_id: data.user_id}).select('balance');
+            const transactionAmount = Math.abs(data.amount)
+
+            if (userBalance.balance > transactionAmount) {
+                return true
+            } else {return false}
+        } catch (error) {
+            throw new Error(error)
+        }
+    }
+
     static async addUserTransactionbyId(data){
         try {
             const user = await User.findById({_id: data.user_id});

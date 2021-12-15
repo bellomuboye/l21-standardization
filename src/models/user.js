@@ -28,6 +28,11 @@ const userSchema = new Schema(
       default: 'enabled',
       required: true
     },
+    balance: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     transactions: [{
       type: Schema.Types.ObjectId,
       ref: 'transaction'

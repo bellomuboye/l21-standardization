@@ -19,7 +19,7 @@ module.exports = class Tranasaction{
 
             const depositTransaction = await TransactionService.createTransaction(transactionData)
             const updateRecipientTransaction = await UserService.addUserTransactionbyId({user_id: depositTransaction.recipient_id, transaction_id: depositTransaction._id})
-
+            const updateRecipientBalance = await UserService.updateUserBalance({user_id: depositTransaction.recipient_id, amount: Math.abs(transactionData.amount)})
             res.status(201).send({
                 message: "deposit created",
                 data: {
@@ -52,24 +52,35 @@ module.exports = class Tranasaction{
                 type: "withdraw"
             }
 
-            const withdrawTansaction = await TransactionService.createTransaction(transactionData)
-            const updateSenderTransaction = await UserService.addUserTransactionbyId({user_id: withdrawTansaction.sender_id, transaction_id: withdrawTansaction._id})
+            const isBalanceSufficient = await UserService.isBalanceSufficient({user_id: transactionData.sender_id, amount: transactionData.amount})
+            console.log(isBalanceSufficient)
+            if (isBalanceSufficient === false) {
+                res.status(400).send({
+                    error: true,
+                    message: "insufficient balance"
+                })
+                return
+            }
+
+            const withdrawTransaction = await TransactionService.createTransaction(transactionData)
+            const updateSenderTransaction = await UserService.addUserTransactionbyId({user_id: withdrawTransaction.sender_id, transaction_id: withdrawTransaction._id})
+            const updateSenderBalance = await UserService.updateUserBalance({user_id: withdrawTransaction.sender_id, amount: -Math.abs(transactionData.amount)})
 
             res.status(201).send({
                 message: "withdraw created",
                 data: {
-                    amount: withdrawTansaction.amount,
+                    amount: withdrawTransaction.amount,
                     sender_id: data.sender_id,
                     recipient_id: data.recipient_id,
                     type: "withdraw",
-                    transaction_id: withdrawTansaction._id
+                    transaction_id: withdrawTransaction._id
                 }
             })
         } catch (error) {
             res.status(400).send({
                 error: true,
                 message: "withdraw could not be created",
-                data: error.toString()
+                data: error.toString(),
             })
         }
     }
@@ -87,9 +98,21 @@ module.exports = class Tranasaction{
                 type: "transfer"
             }
 
+            const isBalanceSufficient = await UserService.isBalanceSufficient({user_id: transactionData.sender_id, amount: transactionData.amount})
+            if (!isBalanceSufficient) {
+                res.status(400).send({
+                    error: true,
+                    message: "insufficient balance"
+                })
+                return
+            }
+
             const transferTransaction = await TransactionService.createTransaction(transactionData)
             const updateSenderTransaction = await UserService.addUserTransactionbyId({user_id: transferTransaction.sender_id, transaction_id: transferTransaction._id})
+            const updateSenderBalance = await UserService.updateUserBalance({user_id: transferTransaction.sender_id, amount: -Math.abs(transactionData.amount)})
+
             const updateRecipientTransaction = await UserService.addUserTransactionbyId({user_id: transferTransaction.recipient_id, transaction_id: transferTransaction._id})
+            const updateRecipientBalance = await UserService.updateUserBalance({user_id: transferTransaction.recipient_id, amount: Math.abs(transactionData.amount)})
 
             res.status(201).send({
                 message: "transfer created",
@@ -168,11 +191,16 @@ module.exports = class Tranasaction{
             if (!transaction) return res.status(404).send({error: true, message: "invalid transaction id"})
             if (transaction.type === "deposit") {
                 await UserService.deleteUserTransaction({user_id: transaction.recipient_id, transaction_id: transaction._id})
+                const updateRecipientBalance = await UserService.updateUserBalance({user_id: depositTransaction.recipient_id, amount: -Math.abs(transactionData.amount)})
             } else if (transaction.type === "withdraw") {
                 await UserService.deleteUserTransaction({user_id: transaction.sender_id, transaction_id: transaction._id})
+                const updateSenderBalance = await UserService.updateUserBalance({user_id: depositTransaction.sender_id, amount: Math.abs(transactionData.amount)})
             } else if (transaction.type === "transfer") {
                 await UserService.deleteUserTransaction({user_id: transaction.recipient_id, transaction_id: transaction._id})
+                const updateRecipientBalance = await UserService.updateUserBalance({user_id: depositTransaction.recipient_id, amount: -Math.abs(transactionData.amount)})
+
                 await UserService.deleteUserTransaction({user_id: transaction.sender_id, transaction_id: transaction._id})
+                const updateSenderBalance = await UserService.updateUserBalance({user_id: depositTransaction.sender_id, amount: Math.abs(transactionData.amount)})
             } else throw new Error ("invalid transaction type")
             
             const deleteTransaction = await TransactionService.deleteTransactionById(transaction_id)
