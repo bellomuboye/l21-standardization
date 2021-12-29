@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 mongoose.promise = global.Promise;
 
+const seedDatabase = require("./src/seeds/index")
+
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
   for (const collectionName of collections) {
@@ -36,6 +38,10 @@ module.exports = {
         await mongoose.connect(TEST_MONGODB_URI, { useNewUrlParser: true });
         console.log(`:::>TEST Connected to MongoDB Database - ${databaseName}`)
       });
+
+      // beforeEach(async() => {
+      //   await seedDatabase(false)
+      // })
   
       // Cleans up database between each test
       // afterEach(async () => {

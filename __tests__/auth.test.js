@@ -6,13 +6,9 @@ const mongoose = require("mongoose");
 const { setupDB } = require("../test-setup");
 
 const UserService = require("../src/services/user");
-const User = require("../src/controllers/auth");
 
 setupDB("test1-l21-standardization");
 
-it("Testing Jest", () => {
-  expect(1).toBe(1);
-});
 
 it("Gets the ping endpoint", async (done) => {
   const res = await request.get("/ping");

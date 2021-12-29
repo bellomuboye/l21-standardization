@@ -53,7 +53,6 @@ module.exports = class Tranasaction{
             }
 
             const isBalanceSufficient = await UserService.isBalanceSufficient({user_id: transactionData.sender_id, amount: transactionData.amount})
-            console.log(isBalanceSufficient)
             if (isBalanceSufficient === false) {
                 res.status(400).send({
                     error: true,
@@ -196,7 +195,6 @@ module.exports = class Tranasaction{
                 await UserService.deleteUserTransaction({user_id: transaction.sender_id, transaction_id: transaction._id})
                 const updateSenderBalance = await UserService.updateUserBalance({user_id: transaction.sender_id, amount: Math.abs(transaction.amount)})
             } else if (transaction.type === "transfer") {
-                console.log("Hi")
                 await UserService.deleteUserTransaction({user_id: transaction.recipient_id, transaction_id: transaction._id})
                 const updateRecipientBalance = await UserService.updateUserBalance({user_id: transaction.recipient_id, amount: -Math.abs(transaction.amount)})
 

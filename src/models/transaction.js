@@ -21,7 +21,7 @@ const transactionSchema = new Schema(
           validator: function(v) {
             if (this.type === "withdraw" || this.type === "transfer" ) {
               return v
-            }
+            } else {return true }
           },
           message: "sender_id is required"
         },
@@ -29,7 +29,7 @@ const transactionSchema = new Schema(
           validator: function(v) {
             if (this.type === "transfer") {
               return mongoose.Types.ObjectId.isValid(v)
-            }
+            } else {return true}
           },
           message: "invalid sender_id"
         }
