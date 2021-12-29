@@ -127,3 +127,34 @@ Gets user's details
     "data": ["error message"]
 }
 ```
+
+# View all users
+Gets all users details
+
+**URL** : `/api/users`
+**Method** : `GET`
+**Auth required** : YES
+    Header - Authorization - [token from register or signin]
+    Must be ADMIN
+
+**Request Data constraints**
+`valid url`
+
+**Request Data Example**
+`/api/users`
+
+
+# Enable User
+
+Set user status to enabled
+**URL** : `/api/users/:user_id`
+**Method** : `GET`
+**Auth required** : YES
+    Header - Authorization - [token from register or signin]
+    Must be ADMIN
+
+**Request Data constraints**
+`req.params.user_id`
+
+**Request Data Example**
+`/api/users/61b9c486603ca5d43aaab599`

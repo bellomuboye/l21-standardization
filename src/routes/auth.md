@@ -39,7 +39,7 @@ Returns token used for Authorization
     "data": {
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjFiOWMxMGY2YzMyMjVkMjQzYzZjZjFkIiwiaWF0IjoxNjM5NTYzNTM1LCJleHAiOjE2Mzk1NjQxMzV9.T8pdwtR-L4IU7GjJsWmZtP0gz3S3wFQ46l2DQfju-CE",
         "user_id": "61b9c10f6c3225d243c6cf1d",
-        "email": "campbel.omuboye@gmail.com",
+        "email": "campbell.omuboye@gmail.com",
         "full_name": "Bell Omuboye"
     }
 }
