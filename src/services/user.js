@@ -87,6 +87,17 @@ module.exports = class UserService {
         }
     }
 
+    static async isUserEnabled(userId) {
+        try {
+            const userStatus = await User.findById({_id: data.user_id})
+            if (userStatus === "enabled") {
+                return true
+            } else {return false }
+        } catch(error) {
+            throw new Error(error)
+        }
+    }
+
     static async addUserTransactionbyId(data){
         try {
             const user = await User.findById({_id: data.user_id});

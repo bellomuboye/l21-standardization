@@ -17,6 +17,15 @@ module.exports = class Tranasaction{
                 type: "deposit"
             }
 
+            const isRecipientEnabled = await UserService.isUserEnabled(recipient_id)
+            if (isRecipientEnabled === false) {
+                res.status(400).send({
+                    error: true,
+                    message: "user is not enabled"
+                })
+                return
+            }
+
             const depositTransaction = await TransactionService.createTransaction(transactionData)
             const updateRecipientTransaction = await UserService.addUserTransactionbyId({user_id: depositTransaction.recipient_id, transaction_id: depositTransaction._id})
             const updateRecipientBalance = await UserService.updateUserBalance({user_id: depositTransaction.recipient_id, amount: Math.abs(transactionData.amount)})
@@ -50,6 +59,15 @@ module.exports = class Tranasaction{
                 recipient_id: data.recipient_id,
                 sender_id: req.USER_ID,
                 type: "withdraw"
+            }
+
+            const isSenderEnabled = await UserService.isUserEnabled(sender_id)
+            if (isSenderEnabled === false) {
+                res.status(400).send({
+                    error: true,
+                    message: "user is not enabled"
+                })
+                return
             }
 
             const isBalanceSufficient = await UserService.isBalanceSufficient({user_id: transactionData.sender_id, amount: transactionData.amount})
@@ -95,6 +113,16 @@ module.exports = class Tranasaction{
                 recipient_id: data.recipient_id,
                 sender_id: req.USER_ID,
                 type: "transfer"
+            }
+
+            const isSenderEnabled = await UserService.isUserEnabled(sender_id)
+            const isRecipientEnabled = await UserService.isUserEnabled(recipient_id)
+            if (isRecipientEnabled === false || isSenderEnabled === false) {
+                res.status(400).send({
+                    error: true,
+                    message: "user is not enabled"
+                })
+                return
             }
 
             const isBalanceSufficient = await UserService.isBalanceSufficient({user_id: transactionData.sender_id, amount: transactionData.amount})
