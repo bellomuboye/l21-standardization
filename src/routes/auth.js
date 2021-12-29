@@ -1,10 +1,10 @@
 const router = require("express").Router();
 
 const AuthController = require("../controllers/auth");
-const SchemaValidator = require('../middlewares/joiValidator');
-const joiValidator = SchemaValidator(true);
+const joiValidate = require("../middlewares/joiValidator")
+const schemas = require("../middlewares/joiSchemas")
 
-router.post("/register", AuthController.register);
+router.post("/register", joiValidate(schemas.registrationDataSchema, 'body'), AuthController.register);
 router.post("/login", AuthController.login)
 
 module.exports = router;

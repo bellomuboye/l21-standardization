@@ -42,10 +42,10 @@ const transferTransactionData = Joi.object().keys({
 })
 
 module.exports = {
-    '/api/auth/register': registrationDataSchema,
-    '/api/auth/login': loginDataSchema,
-    '/api/users/': createUserDataSchema,
-    '/api/transactions/deposit': depositTransactionDataSchema,
-    '/api/transactions/withdraw' : withdrawalTransactionDataSchema,
-    '/api/transactions/transfer' : transferTransactionData
+   registrationDataSchema,
+    loginDataSchema,
+    createUserDataSchema,
+    depositTransactionDataSchema,
+    withdrawalTransactionDataSchema,
+    transferTransactionData
 }

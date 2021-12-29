@@ -4,6 +4,7 @@ require("dotenv").config();
 const app = express();
 
 const routes = require("./src/routes")
+const { errorResponder, invalidPath } = require("./src/middlewares/errors")
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -16,6 +17,9 @@ app.get('/ping', (req, res) => {
 });
 
 app.use("/api", routes)
+
+app.use(errorResponder)
+app.use(invalidPath)
 
 module.exports = app;
 

@@ -1,66 +1,28 @@
-const _ = require('lodash');
-const Joi = require('joi');
-const Schemas = require('./schemas');
+const Joi = require("joi");
+const { ValidationError, AuthorizationError } = require("../../customErrors");
 
-module.exports = (useJoiError = false) => {
-  // useJoiError determines if we should respond with the base Joi error
-  // boolean: defaults to false
-  const _useJoiError = _.isBoolean(useJoiError) && useJoiError;
+const validateRequest = (schema, property) => {
+  try {
+    if (!property) property = body;
+    return (req, res, next) => {
+      const { error, value } = schema.validate({ a: "a string" });
 
-  // enabled HTTP methods for request data validation
-  const _supportedMethods = ['post', 'put'];
-
-  // Joi validation options
-  const _validationOptions = {
-    abortEarly: false,  // abort after the last validation error
-    allowUnknown: true, // allow unknown keys that will be ignored
-    stripUnknown: true  // remove unknown keys from the validated data
-  };
-
-  console.log(1);
-  // return the validation middleware
-  return (req, res, next) => {
-    const route = req.route.path;
-    const method = req.method.toLowerCase();
-
-    if (_.includes(_supportedMethods, method) && _.has(Schemas, route)) {
-      // get schema for the current route
-      const _schema = _.get(Schemas, route);
-      console.log(2);
-
-      if (_schema) {
-        // Validate req.body using the schema and validation options
-        return Joi.validate(req.body, _schema, _validationOptions, (err, data) => {
-          if (err) {
-            // Joi Error
-            const JoiError = {
-              status: 'failed',
-              error: {
-                original: err._object,
-                // fetch only message and type from each error
-                details: _.map(err.details, ({message, type}) => ({
-                  message: message.replace(/['"]/g, ''),
-                  type
-                }))
-              }
-            };
-
-            // Custom Error
-            const CustomError = {
-              status: 'failed',
-              error: 'Invalid request data. Please review request and try again.'
-            };
-
-            // Send back the JSON error response
-            res.status(422).json(_useJoiError ? JoiError : CustomError);
-          } else {
-            // Replace req.body with the data after Joi validation
-            req.body = data;
-            next();
-          }
-        });
+      if (error) {
+        let data = {
+          original: error._object,
+          details: error.details.map((e) => ({
+            message: e.message.replace(/['"]/g, ""),
+            type: e.type,
+          })),
+        };
+        throw new ValidationError("invalid request", data);
+      } else {
+        next();
       }
-    }
-    next();
-  };
+    };
+  } catch (error) {
+    next(error);
+  }
 };
+
+module.exports = validateRequest;
