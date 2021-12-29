@@ -116,7 +116,11 @@ it("Reverses a transfer", async (done) => {
     })
     
     let sender = await UserService.getUserbyEmail(users[1].email)
-    const senderTransactions =  (await request.get(`/api/transactions/${sender._id}`).send()).body.data.transactions
+    const senderTransactions =  (await request
+        .get(`/api/transactions/${sender._id}`)
+        .set('Authorization', loginAdmin.body.data.token)
+        .send()
+    ).body.data.transactions
 
     transaction = senderTransactions.filter(tx => tx.type === "transfer")[0]
     

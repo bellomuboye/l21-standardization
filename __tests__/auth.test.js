@@ -9,7 +9,6 @@ const UserService = require("../src/services/user");
 
 setupDB("test1-l21-standardization");
 
-
 it("Gets the ping endpoint", async (done) => {
   const res = await request.get("/ping");
   expect(res.status).toBe(200);
@@ -44,6 +43,7 @@ it("Logs in the user", async (done) => {
     email: "bellomuboye@gmail.com",
     password: "DancingInTheMoon",
   };
+
   const res = await request.post("/api/auth/login").send({
       email: data.email,
       password: data.password
